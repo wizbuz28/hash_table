@@ -1,0 +1,37 @@
+class HashSet:
+    def __init__(self):
+        self.num_buckets = 5
+        self.buckets = [[] for _ in range(self.num_buckets)]
+        self.size = 0
+
+    def _hash(self, key):
+        return hash(key) % self.num_buckets
+
+    def add(self, key):
+        if self.contains(key):
+            return
+        if self.size == self.num_buckets:
+            self._resize()
+        index = self._hash(key)
+        self.buckets[index].append(key)
+        self.size += 1
+
+    def contains(self, key):
+        index = self._hash(key)
+        return key in self.buckets[index]
+
+    def remove(self, key):
+        index = self._hash(key)
+        bucket = self.buckets[index]
+        if key in bucket:
+            bucket.remove(key)
+            self.size -= 1
+
+    def _resize(self):
+        old_buckets = self.buckets
+        self.num_buckets *= 2
+        self.buckets = [[] for _ in range(self.num_buckets)]
+        self.size = 0
+        for bucket in old_buckets:
+            for key in bucket:
+                self.add(key)
